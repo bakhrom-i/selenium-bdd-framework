@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'BROWSER', choices: ['chrome', 'firefox'], description: 'Browser')
+        string(name: 'TAGS', defaultValue: '@smoke', description: 'Cucumber tag filter')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+
+        stage('Start Grid') {
+            steps {
+                sh 'docker-compose -f docker-grid.yml up -d'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh "mvn clean test -Dgrid.url=http://localhost:4444 -Dbrowser=${params.BROWSER} -Dcucumber.filter.tags=\"${params.TAGS}\""
+            }
+        }
+
+        stage('Reports') {
+            steps {
+                publishHTML([reportDir: 'target', reportFiles: 'cucumber-report.html', reportName: 'Cucumber Report'])
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker-compose -f docker-grid.yml down'
+            archiveArtifacts artifacts: 'target/cucumber-report.html, allure-results/**', allowEmptyArchive: true
+        }
+    }
+}
