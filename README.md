@@ -2,15 +2,15 @@
 
 > Production-ready **Selenium-Java** framework with **Cucumber BDD**, **Page Object Model**, parallel execution on **Selenium Grid**, and **Jenkins** CI pipeline.
 
-[![Selenium BDD Tests](https://github.com/YOUR_GH_USER/selenium-bdd-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/YOUR_GH_USER/selenium-bdd-framework/actions/workflows/tests.yml)
+[![Selenium BDD Tests](https://github.com/bakhrom-i/selenium-bdd-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/bakhrom-i/selenium-bdd-framework/actions/workflows/tests.yml)
 ![Java](https://img.shields.io/badge/java-17-orange)
 ![Selenium](https://img.shields.io/badge/selenium-4.20-43B02A)
 ![Cucumber](https://img.shields.io/badge/cucumber-7-23D96C)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**📊 Live test report:** https://YOUR_GH_USER.github.io/selenium-bdd-framework/
+**📊 Live test report:** https://bakhrom-i.github.io/selenium-bdd-framework/
 
-> _Replace `YOUR_GH_USER` with your GitHub username after pushing._
+> _Replace `bakhrom-i` with your GitHub username after pushing._
 
 ## Tech Stack
 
@@ -75,7 +75,7 @@ After pushing the repo:
 1. Go to your repo on GitHub → **Settings** → **Pages**
 2. Under **Build and deployment → Source**, select **GitHub Actions**
 3. Push to `main` (or wait for nightly cron) — the `publish-report` job will deploy
-4. Report appears at `https://YOUR_GH_USER.github.io/selenium-bdd-framework/`
+4. Report appears at `https://bakhrom-i.github.io/selenium-bdd-framework/`
 
 ## License
 
