@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 6 * * *'   # nightly at 06:00 UTC
+    - cron: '0 6 * * *'
 
 permissions:
   contents: read
@@ -39,30 +39,35 @@ jobs:
         run: mvn -B clean test -Dgrid.url=http://localhost:4444 -Dbrowser=chrome
         continue-on-error: true
 
-      - name: Generate Allure report
+      - name: Prepare report for Pages
         if: always()
-        uses: simple-elf/allure-report-action@v1.7
-        with:
-          allure_results: allure-results
-          allure_report: allure-report
+        run: |
+          mkdir -p public
+          if [ -f target/cucumber-report.html ]; then
+            cp target/cucumber-report.html public/index.html
+          else
+            cat > public/index.html <<'EOF'
+          <!doctype html>
+          <html><head><title>Selenium BDD Framework</title>
+          <style>body{font-family:sans-serif;max-width:680px;margin:60px auto;padding:0 20px;color:#222}
+          h1{color:#43B02A}code{background:#f4f4f4;padding:2px 6px;border-radius:4px}</style></head>
+          <body><h1>Selenium BDD Framework</h1>
+          <p>The Cucumber test report will appear here once tests run successfully.</p>
+          <p>Framework structure: Cucumber 7 + JUnit 5 + Selenium 4 + Page Object Model + Selenium Grid.</p>
+          <p>See repository <a href="https://github.com/bakhrom-i/selenium-bdd-framework">on GitHub</a>.</p>
+          </body></html>
+          EOF
+          fi
 
-      - name: Upload Cucumber HTML
+      - name: Upload Pages artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: cucumber-report
-          path: target/cucumber-report.html
-
-      - name: Upload Allure report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: allure-report
+          path: ./public
 
       - name: Stop Grid
         if: always()
-        run: docker compose -f docker-grid.yml down
+        run: docker compose -f docker-grid.yml down || true
 
   publish-report:
     needs: test
@@ -72,16 +77,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: allure-report
-          path: ./public
-
       - uses: actions/configure-pages@v5
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-
       - id: deployment
         uses: actions/deploy-pages@v4
