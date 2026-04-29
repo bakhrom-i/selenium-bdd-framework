@@ -10,11 +10,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LoginSteps {
 
+    // Public automation-testing target. Override with -Dbase.url=... in CI
+    // if pointing at a different system under test.
+    private static final String DEFAULT_LOGIN_URL = "https://the-internet.herokuapp.com/login";
+
     private LoginPage loginPage;
 
     @Given("the user is on the login page")
     public void open_login() {
-        DriverFactory.get().get(System.getProperty("base.url", "https://example.com/login"));
+        DriverFactory.get().get(System.getProperty("base.url", DEFAULT_LOGIN_URL));
         loginPage = new LoginPage();
     }
 
@@ -25,11 +29,16 @@ public class LoginSteps {
 
     @Then("the dashboard is displayed")
     public void dashboard_displayed() {
-        assertTrue(DriverFactory.get().getCurrentUrl().contains("/dashboard"));
+        // the-internet.herokuapp.com redirects authenticated users to /secure.
+        assertTrue(
+            DriverFactory.get().getCurrentUrl().contains("/secure"),
+            "Expected redirect to /secure after successful login, got: "
+                + DriverFactory.get().getCurrentUrl()
+        );
     }
 
     @Then("a login error is shown")
     public void error_shown() {
-        assertTrue(loginPage.isError());
+        assertTrue(loginPage.isError(), "Expected an error flash banner to be visible");
     }
 }

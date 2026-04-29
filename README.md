@@ -32,6 +32,12 @@
 - Hooks for screenshots on failure
 - **Nightly CI run** publishes Allure report to GitHub Pages
 
+## What the tests do
+
+By default the suite drives [the-internet.herokuapp.com/login](https://the-internet.herokuapp.com/login) — a public sandbox built specifically for automation testing. It exercises a real browser session against a real HTTP form: positive login with `tomsmith` / `SuperSecretPassword!`, plus three negative paths that assert an error flash banner appears.
+
+Override the target with `-Dbase.url=https://your-app/login` to run the same scenarios against your own application.
+
 ## Project Structure
 
 ```
